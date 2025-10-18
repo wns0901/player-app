@@ -91,13 +91,31 @@ echo ""
 
 if [ $? -eq 0 ]; then
     echo ""
-    echo -e "${GREEN}======================================"
-    echo "✓ 빌드 완료!"
-    echo "======================================${NC}"
+    echo -e "${GREEN}✓ 빌드 성공!${NC}"
     echo ""
-    echo "생성된 APK 위치:"
-    echo "  app/build/outputs/apk/debug/app-debug.apk"
-    echo ""
+
+    # APK 파일을 루트 디렉토리에 앱 이름으로 복사
+    SOURCE_APK="app/build/outputs/apk/debug/app-debug.apk"
+    TARGET_APK="${APP_NAME}.apk"
+
+    if [ -f "$SOURCE_APK" ]; then
+        cp "$SOURCE_APK" "$TARGET_APK"
+        if [ $? -eq 0 ]; then
+            echo -e "${GREEN}✓ APK 파일 생성 완료!${NC}"
+            echo ""
+            echo "======================================"
+            echo "📱 생성된 APK:"
+            echo "  ./${TARGET_APK}"
+            echo "======================================"
+            echo ""
+        else
+            echo -e "${YELLOW}[경고]${NC} APK 복사 실패. 원본 위치:"
+            echo "  $SOURCE_APK"
+        fi
+    else
+        echo -e "${RED}[오류]${NC} APK 파일을 찾을 수 없습니다: $SOURCE_APK"
+        exit 1
+    fi
 else
     echo ""
     echo -e "${RED}[오류]${NC} 빌드 실패"
